@@ -1,5 +1,5 @@
 name: Kwiki-GDGraphGenerator
-version: 0.02
+version: 0.03
 abstract: put pretty graphs into your Kwiki pages
 author: Ian Langworth <langworth.com>
 license: perl

@@ -4,7 +4,7 @@ use warnings;
 use Kwiki::Plugin '-Base';
 use Kwiki::Installer '-base';
 
-our $VERSION = "0.02";
+our $VERSION = "0.03";
 
 const class_title => 'Kwiki graphs';
 const class_id => 'graphgenerator';
@@ -23,11 +23,12 @@ sub to_html {
 
     # parse the config, make sure options are there
     require YAML;
-    $self->config( YAML::Load($self->block_text) );
-    return $self->error("Graph config isn't a hash")
+    $self->config( eval{ YAML::Load($self->block_text) } );
+    return $self->error("make sure your YAML is correct") if $@;
+    return $self->error("graph config isn't a hash")
         unless $self->config && ref $self->config eq 'HASH';
     foreach (qw( id data type )) {
-        return $self->error("Graph config must specify '$_'")
+        return $self->error("graph config must specify '$_'")
             unless exists $self->config->{$_};
     }
 
@@ -56,7 +57,7 @@ sub checksum {
 
 sub image_path {
     $self->hub->cgi->button;
-    $self->hub->graph->plugin_directory . '/' .
+    $self->hub->graphgenerator->plugin_directory . '/' .
     $self->hub->pages->current->id . '.' .
     $self->config->{id} . '.png';
 }
@@ -76,6 +77,11 @@ sub generate_image {
     delete @config{qw( type width height data id )};
     $width ||= 300;
     $height ||= 300;
+
+    # check for keys we don't allow
+    foreach my $key (qw( logo )) {
+        return "specifying $key is not permitted" if $config{$key};
+    }
 
     # create a new graph object
     require GD::Graph;
@@ -187,6 +193,8 @@ This module turns C<graph> WAFL blocks into pretty graphs using L<GD::Graph>. Be
 
 You might need to clean up the cache for this module every now and then. The cache is located in the F<plugin/graphgenerator> directory in your Kwiki installation directory.
 
+The "logo" key is not allowed because it would allow anyone to view any image on the filesystem that the Kwiki user could read.
+
 =head1 AUTHORS
 
 Ian Langworth <langworth.com>
@@ -204,15 +212,15 @@ it under the same terms as Perl itself.
 
 =cut
 
-__plugin/graph/.htaccess__
+__plugin/graphgenerator/.htaccess__
 Allow from all
 
-__template/tt2/graph_error.html__
-<!-- BEGIN graph_error.html -->
+__template/tt2/graphgenerator_error.html__
+<!-- BEGIN graphgenerator_error.html -->
 <p><span class="error">[% msg %]</span></p>
-<!-- END graph_error.html -->
+<!-- END graphgenerator_error.html -->
 
-__template/tt2/graph_inline.html__
-<!-- BEGIN graph_inline.html -->
+__template/tt2/graphgenerator_inline.html__
+<!-- BEGIN graphgenerator_inline.html -->
 <img src="[% src %]" alt="(graph)" />
-<!-- END graph_inline.html -->
+<!-- END graphgenerator_inline.html -->
