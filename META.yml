@@ -1,6 +1,6 @@
 name: Kwiki-GDGraphGenerator
-version: 0.01
-abstract: announce updates to your Kwiki on IRC channels
+version: 0.02
+abstract: put pretty graphs into your Kwiki pages
 author: Ian Langworth <langworth.com>
 license: perl
 distribution_type: module

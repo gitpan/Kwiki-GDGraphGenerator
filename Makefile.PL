@@ -1,7 +1,7 @@
 use inc::Module::Install;
 
 name('Kwiki-GDGraphGenerator');
-abstract('announce updates to your Kwiki on IRC channels');
+abstract('put pretty graphs into your Kwiki pages');
 author('Ian Langworth <langworth.com>');
 version_from('lib/Kwiki/GDGraphGenerator.pm');
 license('perl');

@@ -4,7 +4,7 @@ use warnings;
 use Kwiki::Plugin '-Base';
 use Kwiki::Installer '-base';
 
-our $VERSION = "0.01";
+our $VERSION = "0.02";
 
 const class_title => 'Kwiki graphs';
 const class_id => 'graphgenerator';
